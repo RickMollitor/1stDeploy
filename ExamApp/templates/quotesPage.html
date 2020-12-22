@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Quotes</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+        #division {
+            border-style: solid;
+            width: fit-content;
+            padding: 5px;
+            margin: 5px;
+        }
+        </style>
+    </head>
+
+    <body>
+        <div id = 'wrapper'>
+
+            <div id = 'header'>
+                <h1>Welcome, {{loggedInUser.userName}}!</h1>
+                <p><a href='/logOut'>Log Out</a></p>
+            </div>
+
+            <div id = 'quotes'>
+                <h2>Quotable Quotes</h2>
+                {%for i in nonFavoritedQuotes%}
+                    <div id = "division">
+                        <p>{{i.source}}: {{i.description}}</p>
+                        <a href="/Fav/{{i.id}}">Add to favorites</a>
+                        <p>Posted by <a href="/users/{{i.uploadedBy.id}}">{{i.uploadedBy.userName}}</a></p>
+                    </div>
+                {%endfor%}
+            </div>
+
+            <div id = 'favs'>
+                <h2>Your favorites</h2>
+                {%for i in favoritedQuotes%}
+                    <div id = "division">
+                        {%if loggedInUser.id == i.uploadedBy.id%}
+                            <p><a href = '/edit/{{i.id}}'>Edit</a> | <a href = '/delete/{{i.id}}'>Delete</a></p>
+                        {%endif%}
+                            <p>{{i.source}}: {{i.description}}</p>
+                        <p><a href="/unFav/{{i.id}}">Remove from favorites</a></p>
+                        <p>Posted by <a href="/users/{{i.uploadedBy.id}}">{{i.uploadedBy.userName}}</a></p>
+                    </div>
+                    {%endfor%}
+            </div>
+
+            <div id = 'makeQuotes'>
+                <h2>Contribute a Quote</h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p style = "color: red;">{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+                <form action="/newQuote" method="post">
+                    {%csrf_token%}
+                    <p>Quoted By: <input type="text" name="qSource" id=""></p>
+                    <p>Message:</p>
+                    <textarea name="qDescription" id="" cols="28" rows="7"></textarea>
+                    <p><input type="submit" value="Submit"></p>
+                </form>
+            </div>
+
+        </div>
+    </body>
+</html>
